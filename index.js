@@ -25,7 +25,7 @@ const displayTrees = plants => {
                   <h1 class="font-bold"><i class="fa-sharp fa-solid fa-bangladeshi-taka-sign"></i>${plant.price}</h1>
               </div>     
                 <!-- Button at bottom -->
-              <a id="${plant.id}" class="btn bg-[#15803D] text-white mt-auto rounded-3xl w-full">Add to Cart</a>
+              <a id="add-${plant.id}" class="btn bg-[#15803D] text-white mt-auto rounded-3xl w-full">Add to Cart</a>
           </div>
     </div>
           `
@@ -34,16 +34,6 @@ const displayTrees = plants => {
   });
 };
 loadAllPlants();
-document.getElementById('all-plants')
-  .addEventListener('click', (e) => {
-    const allh3 = document.querySelectorAll('h3');
-    allh3.forEach(h3 => {
-      h3.classList.remove('bg-[#15803D]');
-    });
-    e.target.classList.add('bg-[#15803D]');
-    loadAllPlants();
-  });
-
 //load all categories
 const loadAllCategories = () => {
   fetch("https://openapi.programming-hero.com/api/categories")
@@ -58,11 +48,9 @@ const displayAllCategories = categories => {
   categories.forEach(category => {
     const li = document.createElement('li');
     li.innerHTML += `
-    <h3 id="${category.id}" class="text-xl mb-2">${category.category_name}</h3>
+    <h3 id="${category.id}" class="text-xl mb-2 p-3 rounded-lg">${category.category_name}</h3>
     `
     categoryContainer.appendChild(li);
-    // loadCategory(category.id);
-    // console.log(category.category_name)
   });
   categoryContainer.addEventListener('click', e => {
     const allH3 = document.querySelectorAll('h3');
@@ -70,13 +58,13 @@ const displayAllCategories = categories => {
       h3.classList.remove('bg-[#15803D]');
     });
     if (e.target.localName === 'h3') {
-      //console.log(e.target.id);
       e.target.classList.add('bg-[#15803D]');
       loadCategory(e.target.id);
     }
   });
 };
-loadAllCategories(); const loadCategory = (id) => {
+loadAllCategories(); 
+const loadCategory = (id) => {
   fetch(`https://openapi.programming-hero.com/api/category/${id}`)
     .then(res => res.json())
     .then(json => displayCategory(json.plants));
@@ -98,10 +86,11 @@ const displayCategory = (plants) => {
                <h1 class="font-bold"><i class="fa-sharp fa-solid fa-bangladeshi-taka-sign"></i>${plant.price}</h1>
            </div>     
              <!-- Button at bottom -->
-           <a id="${plant.id}" class="btn bg-[#15803D] text-white mt-auto rounded-3xl w-full">Add to Cart</a>
+           <a id="add-${plant.id}" class="btn bg-[#15803D] text-white mt-auto rounded-3xl w-full">Add to Cart</a>
        </div>
  </div>
        `
+
     plantContainer.appendChild(div);
   })
 }
@@ -113,19 +102,16 @@ const displayAddCart = (plants) => {
   addCartContainer.innerHTML = "";
   let totalPrice = 0;
   plants.forEach((plant) => {
-    const plantName = plant.name;
-    const id = plant.id;
-    let price = plant.price;
-
+    const id =`add-${plant.id}`;
     document.getElementById(id)
-      .addEventListener('click', (e) => {
+      .addEventListener('click', () => {
+         let price = plant.price;
         totalPrice = totalPrice + price;
-        console.log(totalPrice);
         const div = document.createElement('div');
         div.innerHTML = `
       <div>
          <div class="bg-[#DCFCE7] rounded-xl p-2 mb-2">
-           <h1 class="text-md font-semibold">${plantName}</h1>
+           <h1 class="text-md font-semibold">${plant.name}</h1>
            <h1>৳${plant.price} x 1</h1>
          </div>
          <div class="flex justify-between my-3">
@@ -134,10 +120,7 @@ const displayAddCart = (plants) => {
          </div>
       </div>
             `
-        // console.log(e.target);
         addCartContainer.appendChild(div);
-
-
-      })
-  })
+      });
+  });
 };
