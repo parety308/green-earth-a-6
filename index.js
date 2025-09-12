@@ -2,7 +2,10 @@
 const loadAllPlants = () => {
   fetch("https://openapi.programming-hero.com/api/plants")
     .then(res => res.json())
-    .then(json => displayTrees(json.plants));
+    .then(json => {
+      displayTrees(json.plants);
+      displayAddCart(json.plants);
+    });
 };
 
 //Display All Trees 
@@ -103,3 +106,38 @@ const displayCategory = (plants) => {
   })
 }
 
+//Add cart functionality
+
+const displayAddCart = (plants) => {
+  const addCartContainer = document.getElementById('add-container');
+  addCartContainer.innerHTML = "";
+  let totalPrice = 0;
+  plants.forEach((plant) => {
+    const plantName = plant.name;
+    const id = plant.id;
+    let price = plant.price;
+
+    document.getElementById(id)
+      .addEventListener('click', (e) => {
+        totalPrice = totalPrice + price;
+        console.log(totalPrice);
+        const div = document.createElement('div');
+        div.innerHTML = `
+      <div>
+         <div class="bg-[#DCFCE7] rounded-xl p-2 mb-2">
+           <h1 class="text-md font-semibold">${plantName}</h1>
+           <h1>৳${plant.price} x 1</h1>
+         </div>
+         <div class="flex justify-between my-3">
+           <h1 class="text-xl font-semibold">Total</h1>
+           <h1 class="text-xl ">:${totalPrice}</h1>
+         </div>
+      </div>
+            `
+        // console.log(e.target);
+        addCartContainer.appendChild(div);
+
+
+      })
+  })
+};
