@@ -31,6 +31,15 @@ const displayTrees = plants => {
   });
 };
 loadAllPlants();
+document.getElementById('all-plants')
+  .addEventListener('click', (e) => {
+    const allh3 = document.querySelectorAll('h3');
+    allh3.forEach(h3 => {
+      h3.classList.remove('bg-[#15803D]');
+    });
+    e.target.classList.add('bg-[#15803D]');
+    loadAllPlants();
+  });
 
 //load all categories
 const loadAllCategories = () => {
@@ -64,9 +73,7 @@ const displayAllCategories = categories => {
     }
   });
 };
-loadAllCategories();
-
-const loadCategory = (id) => {
+loadAllCategories(); const loadCategory = (id) => {
   fetch(`https://openapi.programming-hero.com/api/category/${id}`)
     .then(res => res.json())
     .then(json => displayCategory(json.plants));
