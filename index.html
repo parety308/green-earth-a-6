@@ -79,7 +79,7 @@
                     <h1 class="text-2xl font-bold mb-1 ">Your Cart</h1>
                     <div id="add-container">
                     </div>
-                    <div id="price-container"  class="flex justify-between my-3">
+                    <div id="price-container" class="flex justify-between my-3">
                         <h1 class="text-xl font-semibold">Total</h1>
                         <h1 id="update-price"></h1>
                     </div>
@@ -133,13 +133,21 @@
                 <div class="flex flex-col justify-center items-center ">
                     <input type="text" class="bg-white rounded-lg p-2 mt-2 w-full " placeholder="Your Name">
                     <input type="text" class="bg-white rounded-lg p-2 mt-2 w-full " placeholder="Your Email Address">
-                    <input type="text" class="bg-white rounded-lg p-2 mt-2 w-full " placeholder="Number of Trees">
+                    <select id="numPlants" class="bg-white rounded-lg p-2 mt-2 w-full">
+                        <option value="" disabled selected>Number of Trees</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+
                     <a class="btn bg-[#FACC15] text-[#15803D] mt-3 rounded-3xl w-full">Donate Now</a>
                 </div>
             </div>
         </section>
         <section class="text-[#FFFFFF] text-xl  shadow-md bg-[#14532D] text-center py-4 ">
-<p>© 2025 Green Earth. All Rights Reserved.</p>
+            <p>© 2025 Green Earth. All Rights Reserved.</p>
         </section>
     </footer>
     <script src="index.js"></script>
