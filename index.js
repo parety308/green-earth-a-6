@@ -98,41 +98,58 @@ const displayCategory = (plants) => {
 }
 
 //Add cart functionality
-
 const addCartContainer = document.getElementById('add-container');
 const updatePrice = document.getElementById('update-price');
 updatePrice.innerHTML = "";
 addCartContainer.innerHTML = "";
 let totalPrice = 0;
+
 const displayAddCart = (plants) => {
   plants.forEach((plant) => {
     const id = `add-${plant.id}`;
     document.getElementById(id)
       .addEventListener('click', () => {
         let price = plant.price;
-        totalPrice = totalPrice + price;
+        totalPrice += price;
         updatePrice.innerHTML = `<h1 class="text-xl ">${totalPrice}</h1>`;
-        const div = document.createElement('div');
-        div.innerHTML = `
-      <div class="bg-[#DCFCE7] rounded-xl p-2 mb-2 flex justify-between">
-         <div>
-           <h1 class="text-md font-semibold">${plant.name}</h1>
-           <h1>৳${plant.price} x 1</h1>
-         </div>
-         <div id="" class="flex justify-center items-center"><i class="fa-solid fa-circle-xmark"></i></div>
-      </div>
-            `
-        addCartContainer.appendChild(div);
         document.getElementById('price-container').style.display = 'flex';
-        const removePlant = div.querySelector('.fa-circle-xmark');
-        removePlant.addEventListener('click', () => {
-          totalPrice = totalPrice - plant.price;
-          updatePrice.innerHTML = `<h1 class="text-xl ">${totalPrice}</h1>`;
-          div.remove();
-          if (totalPrice <= 0) {
-            document.getElementById('price-container').style.display = 'none';
-          }
-        });
+
+        let existingItem = document.getElementById(`cart-item-${plant.id}`);
+
+        if (existingItem) {
+          let qtyElement = existingItem.querySelector('.quantity');
+          let qty = parseInt(qtyElement.innerText);
+          qty++;
+          qtyElement.innerText = qty;
+          let lineTotalElement = existingItem.querySelector('.line-total');
+          lineTotalElement.innerHTML = `৳${plant.price} x <span class="quantity">${qty}</span>`;
+        } else {
+          const div = document.createElement('div');
+          div.id = `cart-item-${plant.id}`;
+          div.classList.add("bg-[#DCFCE7]", "rounded-xl", "p-2", "mb-2", "flex", "justify-between");
+
+          div.innerHTML = `
+            <div>
+              <h1 class="text-md font-semibold">${plant.name}</h1>
+              <h1 class="line-total">৳${plant.price} x <span class="quantity">1</span></h1>
+            </div>
+            <div class="flex justify-center items-center">
+              <i class="fa-solid fa-circle-xmark cursor-pointer text-red-500"></i>
+            </div>
+          `;
+          addCartContainer.appendChild(div);
+
+          const removePlant = div.querySelector('.fa-circle-xmark');
+          removePlant.addEventListener('click', () => {
+            let qty = parseInt(div.querySelector('.quantity').innerText);
+            totalPrice -= plant.price * qty;
+            div.remove();
+            updatePrice.innerHTML = `<h1 class="text-xl ">${totalPrice}</h1>`;
+            if (totalPrice <= 0) {
+              document.getElementById('price-container').style.display = 'none';
+            }
+          });
+        }
       });
   });
 };
