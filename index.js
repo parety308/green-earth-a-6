@@ -1,4 +1,5 @@
 //load All  Tree
+document.getElementById('price-container').style.display = 'none';
 const loadAllPlants = () => {
   fetch("https://openapi.programming-hero.com/api/plants")
     .then(res => res.json())
@@ -63,13 +64,13 @@ const displayAllCategories = categories => {
     }
   });
 };
-loadAllCategories(); 
+loadAllCategories();
 const loadCategory = (id) => {
   fetch(`https://openapi.programming-hero.com/api/category/${id}`)
     .then(res => res.json())
     .then(json => displayCategory(json.plants));
 };
-
+//display categories::
 const displayCategory = (plants) => {
   const plantContainer = document.getElementById('plant-trees');
   plantContainer.innerHTML = "";
@@ -93,34 +94,36 @@ const displayCategory = (plants) => {
 
     plantContainer.appendChild(div);
   })
+  displayAddCart(plants);
 }
 
 //Add cart functionality
 
+const addCartContainer = document.getElementById('add-container');
+const updatePrice = document.getElementById('update-price');
+updatePrice.innerHTML = "";
+addCartContainer.innerHTML = "";
+let totalPrice = 0;
 const displayAddCart = (plants) => {
-  const addCartContainer = document.getElementById('add-container');
-  addCartContainer.innerHTML = "";
-  let totalPrice = 0;
   plants.forEach((plant) => {
-    const id =`add-${plant.id}`;
+    const id = `add-${plant.id}`;
     document.getElementById(id)
       .addEventListener('click', () => {
-         let price = plant.price;
+        let price = plant.price;
         totalPrice = totalPrice + price;
         const div = document.createElement('div');
         div.innerHTML = `
-      <div>
-         <div class="bg-[#DCFCE7] rounded-xl p-2 mb-2">
+      <div class="bg-[#DCFCE7] rounded-xl p-2 mb-2 flex justify-between">
+         <div>
            <h1 class="text-md font-semibold">${plant.name}</h1>
            <h1>৳${plant.price} x 1</h1>
          </div>
-         <div class="flex justify-between my-3">
-           <h1 class="text-xl font-semibold">Total</h1>
-           <h1 class="text-xl ">:${totalPrice}</h1>
-         </div>
+         <div id="" class="flex justify-center items-center"><i class="fa-solid fa-circle-xmark"></i></div>
       </div>
             `
         addCartContainer.appendChild(div);
+        updatePrice.innerHTML = `<h1 id="update-price" class="text-xl ">${totalPrice}</h1>`
+        document.getElementById('price-container').style.display = 'flex';
       });
   });
 };
