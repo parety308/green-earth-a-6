@@ -2,8 +2,8 @@
 document.getElementById('price-container').style.display = 'none';
 const spinner = document.getElementById('spinner');
 const loadAllPlants = () => {
-    spinner.classList.remove('hidden'); // show spinner
-      spinner.classList.add('flex'); // show spinner
+  spinner.classList.remove('hidden'); // show spinner
+  spinner.classList.add('flex'); // show spinner
   fetch("https://openapi.programming-hero.com/api/plants")
     .then(res => res.json())
     .then(json => {
@@ -22,7 +22,7 @@ const displayTrees = plants => {
     <div class="border-gray-400 shadow-md bg-white p-3 rounded-lg h-[450px] flex flex-col">
           <img src="${plant.image}" alt="" class="h-45 w-full object-cover rounded-md">     
           <div class="flex flex-col flex-grow">
-              <h1 class="font-bold">${plant.name}</h1>
+              <h1 class="plant-name font-bold">${plant.name}</h1>
               <p class="flex-grow">${plant.description}</p>
               <div class="flex justify-between items-center p-2">
                   <h1 class="text-[#15803D] bg-[#DCFCE7] rounded-xl p-2">${plant.category}</h1>
@@ -32,10 +32,15 @@ const displayTrees = plants => {
               <a id="add-${plant.id}" class="btn bg-[#15803D] text-white mt-auto rounded-3xl w-full">Add to Cart</a>
           </div>
     </div>
-          `
+          `;
     plantContainer.appendChild(div);
     spinner.classList.add('hidden');
     spinner.classList.remove('flex');
+    //modal functionality
+    const modalName = div.querySelector('.plant-name');
+    modalName.addEventListener('click', () => {
+      displayDetails(plant);
+    });
 
   });
 };
@@ -85,7 +90,7 @@ const displayCategory = (plants) => {
  <div class="border-gray-400 shadow-md bg-white p-3 rounded-lg h-[450px] flex flex-col">
        <img src="${plant.image}" alt="" class="h-45 w-full object-cover rounded-md">     
        <div class="flex flex-col flex-grow">
-           <h1 class="font-bold">${plant.name}</h1>
+           <h1 class="plant-name font-bold">${plant.name}</h1>
            <p class="flex-grow">${plant.description}</p>
            <div class="flex justify-between items-center p-2">
                <h1 class="text-[#15803D] bg-[#DCFCE7] rounded-xl p-2">${plant.category}</h1>
@@ -98,9 +103,15 @@ const displayCategory = (plants) => {
        `
 
     plantContainer.appendChild(div);
-  })
-  displayAddCart(plants);
-}
+    //modal functionality
+const modalName = div.querySelector('.plant-name');
+modalName.addEventListener('click', () => {
+  displayDetails(plant);
+});
+  });
+
+  displayAddCart(plants);     
+};
 
 //Add cart functionality
 const addCartContainer = document.getElementById('add-container');
@@ -158,3 +169,22 @@ const displayAddCart = (plants) => {
       });
   });
 };
+
+
+//modal funtionality
+const displayDetails = (plant) => {
+  const detailContainer=document.getElementById('details-container');
+  detailContainer.innerHTML="";
+  const div=document.createElement('div');
+  div.innerHTML=`
+   <div class="text-xl p-2 h-[450px] flex flex-col gap-y-2">
+     <h1 class="text-2xl font-bold">${plant.name}</h1>
+     <img src="${plant.image}" alt="" class="h-[50%] w-full object-cover rounded-md">
+     <h1><span class="font-bold">Categories : </span>${plant.category}</h1>
+     <h1><span class="font-bold">Price :</span>${plant.price}</h1>
+     <p><span class="font-bold">Description : </span>${plant.description}</p>
+ </div>
+  `
+  detailContainer.appendChild(div);
+  document.getElementById("word_modal").showModal();
+}
