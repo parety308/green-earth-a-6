@@ -1,6 +1,9 @@
 //load All  Tree
 document.getElementById('price-container').style.display = 'none';
+const spinner = document.getElementById('spinner');
 const loadAllPlants = () => {
+    spinner.classList.remove('hidden'); // show spinner
+      spinner.classList.add('flex'); // show spinner
   fetch("https://openapi.programming-hero.com/api/plants")
     .then(res => res.json())
     .then(json => {
@@ -31,6 +34,8 @@ const displayTrees = plants => {
     </div>
           `
     plantContainer.appendChild(div);
+    spinner.classList.add('hidden');
+    spinner.classList.remove('flex');
 
   });
 };
