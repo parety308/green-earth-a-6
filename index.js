@@ -111,6 +111,7 @@ const displayAddCart = (plants) => {
       .addEventListener('click', () => {
         let price = plant.price;
         totalPrice = totalPrice + price;
+        updatePrice.innerHTML = `<h1 class="text-xl ">${totalPrice}</h1>`;
         const div = document.createElement('div');
         div.innerHTML = `
       <div class="bg-[#DCFCE7] rounded-xl p-2 mb-2 flex justify-between">
@@ -122,8 +123,16 @@ const displayAddCart = (plants) => {
       </div>
             `
         addCartContainer.appendChild(div);
-        updatePrice.innerHTML = `<h1 id="update-price" class="text-xl ">${totalPrice}</h1>`
         document.getElementById('price-container').style.display = 'flex';
+        const removePlant = div.querySelector('.fa-circle-xmark');
+        removePlant.addEventListener('click', () => {
+          totalPrice = totalPrice - plant.price;
+          updatePrice.innerHTML = `<h1 class="text-xl ">${totalPrice}</h1>`;
+          div.remove();
+          if (totalPrice <= 0) {
+            document.getElementById('price-container').style.display = 'none';
+          }
+        });
       });
   });
 };
