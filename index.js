@@ -1,25 +1,40 @@
-//load All  Tree
+// Hide price initially
 document.getElementById('price-container').style.display = 'none';
+
 const spinner = document.getElementById('spinner');
+
+
+// ==============================
+// Load All Plants
+// ==============================
 const loadAllPlants = () => {
-  spinner.classList.remove('hidden'); // show spinner
-  spinner.classList.add('flex'); // show spinner
+
+  spinner.classList.remove('hidden');
+  spinner.classList.add('flex');
+
   fetch("https://openapi.programming-hero.com/api/plants")
     .then(res => res.json())
-    .then(json => {
-      displayTrees(json.plants);
-      displayAddCart(json.plants);
+    .then(data => {
+
+      displayTrees(data.plants);
+
     });
+
 };
 
-//Display All Trees 
+
+
+// ==============================
+// Display Plants
+// ==============================
 const displayTrees = plants => {
+
   const plantContainer = document.getElementById('plant-trees');
+
   plantContainer.innerHTML = "";
 
   plants.forEach(plant => {
 
-    // limit description to 100 characters
     const shortDescription =
       plant.description.length > 100
         ? plant.description.slice(0, 100) + "..."
@@ -30,31 +45,35 @@ const displayTrees = plants => {
     div.innerHTML = `
     <div class="border-gray-400 shadow-md bg-white p-3 rounded-lg h-[400px] flex flex-col">
 
-        <img src="${plant.image}" alt="" class="h-45 w-full object-cover rounded-md">     
+        <img src="${plant.image}" class="h-[180px] w-full object-cover rounded-md">
 
         <div class="flex flex-col flex-grow">
 
-            <h1 class="plant-name font-bold">${plant.name}</h1>
+           <h1 class="plant-name font-bold cursor-pointer text-green-700 hover:underline">
+                ${plant.name}
+            </h1>
 
             <p class="flex-grow text-sm text-gray-600">
                 ${shortDescription}
             </p>
 
             <div class="flex justify-between items-center p-2">
+
                 <h1 class="text-[#15803D] bg-[#DCFCE7] rounded-xl p-2">
                     ${plant.category}
                 </h1>
 
                 <h1 class="font-bold">
-                    <i class="fa-sharp fa-solid fa-bangladeshi-taka-sign"></i>
+                    <i class="fa-solid fa-bangladeshi-taka-sign"></i>
                     ${plant.price}
                 </h1>
+
             </div>
 
-            <!-- Button -->
-            <a id="add-${plant.id}" class="btn bg-[#15803D] text-white mt-auto rounded-3xl w-full">
+            <button id="add-${plant.id}" 
+            class="btn bg-[#15803D] text-white mt-auto rounded-3xl w-full">
                 Add to Cart
-            </a>
+            </button>
 
         </div>
 
@@ -62,153 +81,252 @@ const displayTrees = plants => {
     `;
 
     plantContainer.appendChild(div);
+
+
+    // Modal click
+    div.querySelector('.plant-name')
+      .addEventListener('click', () => {
+        console.log(plant.id);
+        loadPlantDetails(plant.id);
+
+      });
+
+
+    // Cart click
+    div.querySelector(`#add-${plant.id}`)
+      .addEventListener('click', () => {
+
+        addToCart(plant);
+
+      });
+
   });
 
-  // hide spinner after loading
   spinner.classList.add('hidden');
   spinner.classList.remove('flex');
+
 };
-loadAllPlants();
-//load all categories
+
+
+
+// ==============================
+// Load Plant Details
+// ==============================
+const loadPlantDetails = async (id) => {
+
+  try {
+
+    const res = await fetch(`https://openapi.programming-hero.com/api/plant/${id}`);
+
+    const data = await res.json();
+    console.log(data);
+    if (!data.plants) return;
+
+    displayPlantDetails(data.plants);
+
+  }
+
+  catch (error) {
+
+    console.error("Modal error:", error);
+
+  }
+
+};
+
+
+
+// ==============================
+// Display Modal
+// ==============================
+const displayPlantDetails = plant => {
+
+  console.log(plant);
+  const container = document.getElementById("details-container");
+
+  container.innerHTML = `
+  
+    <img src="${plant.image}" class="w-full h-2/3 rounded-lg">
+
+    <h2 class="text-2xl font-bold mt-3">${plant.name}</h2>
+
+    <p class="mt-2">${plant.description}</p>
+
+    <p class="font-semibold text-green-700 mt-2">
+      Category: ${plant.category}
+    </p>
+    <p class="font-bold">
+      Price: ৳ ${plant.price}
+    </p>
+
+  `;
+   console.log(plant);
+
+  document.getElementById("word_modal").showModal();
+
+};
+
+
+
+// ==============================
+// Load Categories
+// ==============================
 const loadAllCategories = () => {
+
   fetch("https://openapi.programming-hero.com/api/categories")
     .then(res => res.json())
-    .then(json => displayAllCategories(json.categories));
+    .then(data => displayAllCategories(data.categories));
+
 };
 
-//display all categories
+
+
+// ==============================
+// Display Categories
+// ==============================
 const displayAllCategories = categories => {
-  const categoryContainer = document.getElementById('all-categories');
-  categoryContainer.innerHTML = "";
+
+  const container = document.getElementById('all-categories');
+
+  container.innerHTML = "";
+
   categories.forEach(category => {
+
     const li = document.createElement('li');
-    li.innerHTML += `
-    <h3 id="${category.id}" class="text-xl mb-2 p-3 rounded-lg">${category.category_name}</h3>
-    `
-    categoryContainer.appendChild(li);
+
+    li.innerHTML = `
+      <h3 id="${category.id}" class="text-xl mb-2 p-3 rounded-lg cursor-pointer hover:bg-green-100">
+        ${category.category_name}
+      </h3>
+    `;
+
+    container.appendChild(li);
+
   });
-  categoryContainer.addEventListener('click', e => {
-    const allH3 = document.querySelectorAll('h3');
-    allH3.forEach(h3 => {
-      h3.classList.remove('bg-[#15803D]');
-    });
-    if (e.target.localName === 'h3') {
-      e.target.classList.add('bg-[#15803D]');
+
+
+  container.addEventListener('click', e => {
+
+    const all = document.querySelectorAll('#all-categories h3');
+
+    all.forEach(el => el.classList.remove('bg-[#15803D]', 'text-white'));
+
+    if (e.target.tagName === "H3") {
+
+      e.target.classList.add('bg-[#15803D]', 'text-white');
+
       loadCategory(e.target.id);
+
     }
+
   });
+
 };
-loadAllCategories();
-const loadCategory = (id) => {
+
+
+
+// ==============================
+// Load Category Plants
+// ==============================
+const loadCategory = id => {
+
+  spinner.classList.remove('hidden');
+  spinner.classList.add('flex');
+
   fetch(`https://openapi.programming-hero.com/api/category/${id}`)
     .then(res => res.json())
-    .then(json => displayCategory(json.plants));
-};
-//display categories::
-const displayCategory = (plants) => {
-  const plantContainer = document.getElementById('plant-trees');
-  plantContainer.innerHTML = "";
-  plants.forEach(plant => {
-    const div = document.createElement('div');
-    div.innerHTML += `
- <div class="border-gray-400 shadow-md bg-white p-3 rounded-lg h-[450px] flex flex-col">
-       <img src="${plant.image}" alt="" class="h-45 w-full object-cover rounded-md">     
-       <div class="flex flex-col flex-grow">
-           <h1 class="plant-name font-bold">${plant.name}</h1>
-           <p class="flex-grow">${plant.description}</p>
-           <div class="flex justify-between items-center p-2">
-               <h1 class="text-[#15803D] bg-[#DCFCE7] rounded-xl p-2">${plant.category}</h1>
-               <h1 class="font-bold"><i class="fa-sharp fa-solid fa-bangladeshi-taka-sign"></i>${plant.price}</h1>
-           </div>     
-             <!-- Button at bottom -->
-           <a id="add-${plant.id}" class="btn bg-[#15803D] text-white mt-auto rounded-3xl w-full">Add to Cart</a>
-       </div>
- </div>
-       `
+    .then(data => {
 
-    plantContainer.appendChild(div);
-    //modal functionality
-    const modalName = div.querySelector('.plant-name');
-    modalName.addEventListener('click', () => {
-      displayDetails(plant);
+      displayTrees(data.plants);
+
     });
-  });
 
-  displayAddCart(plants);
 };
 
-//Add cart functionality
+
+
+// ==============================
+// Cart Logic
+// ==============================
 const addCartContainer = document.getElementById('add-container');
 const updatePrice = document.getElementById('update-price');
-updatePrice.innerHTML = "";
-addCartContainer.innerHTML = "";
+
 let totalPrice = 0;
 
-const displayAddCart = (plants) => {
-  plants.forEach((plant) => {
-    const id = `add-${plant.id}`;
-    document.getElementById(id)
-      .addEventListener('click', () => {
-        let price = plant.price;
-        totalPrice += price;
-        updatePrice.innerHTML = `<h1 class="text-xl ">${totalPrice}</h1>`;
-        document.getElementById('price-container').style.display = 'flex';
 
-        let existingItem = document.getElementById(`cart-item-${plant.id}`);
+const addToCart = plant => {
 
-        if (existingItem) {
-          let qtyElement = existingItem.querySelector('.quantity');
-          let qty = parseInt(qtyElement.innerText);
-          qty++;
-          qtyElement.innerText = qty;
-          let lineTotalElement = existingItem.querySelector('.line-total');
-          lineTotalElement.innerHTML = `৳${plant.price} x <span class="quantity">${qty}</span>`;
-        } else {
-          const div = document.createElement('div');
-          div.id = `cart-item-${plant.id}`;
-          div.classList.add("bg-[#DCFCE7]", "rounded-xl", "p-2", "mb-2", "flex", "justify-between");
+  totalPrice += plant.price;
 
-          div.innerHTML = `
-            <div>
-              <h1 class="text-md font-semibold">${plant.name}</h1>
-              <h1 class="line-total">৳${plant.price} x <span class="quantity">1</span></h1>
-            </div>
-            <div class="flex justify-center items-center">
-              <i class="fa-solid fa-circle-xmark cursor-pointer text-red-500"></i>
-            </div>
-          `;
-          addCartContainer.appendChild(div);
+  updatePrice.innerText = totalPrice;
 
-          const removePlant = div.querySelector('.fa-circle-xmark');
-          removePlant.addEventListener('click', () => {
-            let qty = parseInt(div.querySelector('.quantity').innerText);
-            totalPrice -= plant.price * qty;
-            div.remove();
-            updatePrice.innerHTML = `<h1 class="text-xl ">${totalPrice}</h1>`;
-            if (totalPrice <= 0) {
-              document.getElementById('price-container').style.display = 'none';
-            }
-          });
-        }
-      });
-  });
+  document.getElementById('price-container').style.display = 'flex';
+
+
+  let existingItem = document.getElementById(`cart-item-${plant.id}`);
+
+
+  if (existingItem) {
+
+    const qtyElement = existingItem.querySelector('.quantity');
+
+    let qty = parseInt(qtyElement.innerText);
+
+    qty++;
+
+    qtyElement.innerText = qty;
+
+    return;
+
+  }
+
+
+  const div = document.createElement('div');
+
+  div.id = `cart-item-${plant.id}`;
+
+  div.className =
+    "bg-[#DCFCE7] rounded-xl p-2 mb-2 flex justify-between items-center";
+
+
+  div.innerHTML = `
+    <div>
+      <h1 class="font-semibold">${plant.name}</h1>
+      <p>৳${plant.price} x <span class="quantity">1</span></p>
+    </div>
+
+    <i class="fa-solid fa-circle-xmark text-red-500 cursor-pointer"></i>
+  `;
+
+
+  addCartContainer.appendChild(div);
+
+
+  div.querySelector('.fa-circle-xmark')
+    .addEventListener('click', () => {
+
+      const qty = parseInt(div.querySelector('.quantity').innerText);
+
+      totalPrice -= plant.price * qty;
+
+      updatePrice.innerText = totalPrice;
+
+      div.remove();
+
+      if (totalPrice <= 0) {
+
+        document.getElementById('price-container').style.display = 'none';
+
+      }
+
+    });
+
 };
 
 
-//modal funtionality
-const displayDetails = (plant) => {
-  const detailContainer = document.getElementById('details-container');
-  detailContainer.innerHTML = "";
-  const div = document.createElement('div');
-  div.innerHTML = `
-   <div class="text-xl p-2 h-[450px] flex flex-col gap-y-2">
-     <h1 class="text-2xl font-bold">${plant.name}</h1>
-     <img src="${plant.image}" alt="" class="h-[50%] w-full object-cover rounded-md">
-     <h1><span class="font-bold">Categories : </span>${plant.category}</h1>
-     <h1><span class="font-bold">Price :</span>${plant.price}</h1>
-     <p><span class="font-bold">Description : </span>${plant.description}</p>
- </div>
-  `
-  detailContainer.appendChild(div);
-  document.getElementById("word_modal").showModal();
-}
+
+// ==============================
+// Initial Load
+// ==============================
+loadAllPlants();
+loadAllCategories();
