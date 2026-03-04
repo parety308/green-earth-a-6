@@ -16,33 +16,57 @@ const loadAllPlants = () => {
 const displayTrees = plants => {
   const plantContainer = document.getElementById('plant-trees');
   plantContainer.innerHTML = "";
-  plants.forEach(plant => {
-    const div = document.createElement('div');
-    div.innerHTML += `
-    <div class="border-gray-400 shadow-md bg-white p-3 rounded-lg h-[450px] flex flex-col">
-          <img src="${plant.image}" alt="" class="h-45 w-full object-cover rounded-md">     
-          <div class="flex flex-col flex-grow">
-              <h1 class="plant-name font-bold">${plant.name}</h1>
-              <p class="flex-grow">${plant.description}</p>
-              <div class="flex justify-between items-center p-2">
-                  <h1 class="text-[#15803D] bg-[#DCFCE7] rounded-xl p-2">${plant.category}</h1>
-                  <h1 class="font-bold"><i class="fa-sharp fa-solid fa-bangladeshi-taka-sign"></i>${plant.price}</h1>
-              </div>     
-                <!-- Button at bottom -->
-              <a id="add-${plant.id}" class="btn bg-[#15803D] text-white mt-auto rounded-3xl w-full">Add to Cart</a>
-          </div>
-    </div>
-          `;
-    plantContainer.appendChild(div);
-    spinner.classList.add('hidden');
-    spinner.classList.remove('flex');
-    //modal functionality
-    const modalName = div.querySelector('.plant-name');
-    modalName.addEventListener('click', () => {
-      displayDetails(plant);
-    });
 
+  plants.forEach(plant => {
+
+    // limit description to 100 characters
+    const shortDescription =
+      plant.description.length > 100
+        ? plant.description.slice(0, 100) + "..."
+        : plant.description;
+
+    const div = document.createElement('div');
+
+    div.innerHTML = `
+    <div class="border-gray-400 shadow-md bg-white p-3 rounded-lg h-[400px] flex flex-col">
+
+        <img src="${plant.image}" alt="" class="h-45 w-full object-cover rounded-md">     
+
+        <div class="flex flex-col flex-grow">
+
+            <h1 class="plant-name font-bold">${plant.name}</h1>
+
+            <p class="flex-grow text-sm text-gray-600">
+                ${shortDescription}
+            </p>
+
+            <div class="flex justify-between items-center p-2">
+                <h1 class="text-[#15803D] bg-[#DCFCE7] rounded-xl p-2">
+                    ${plant.category}
+                </h1>
+
+                <h1 class="font-bold">
+                    <i class="fa-sharp fa-solid fa-bangladeshi-taka-sign"></i>
+                    ${plant.price}
+                </h1>
+            </div>
+
+            <!-- Button -->
+            <a id="add-${plant.id}" class="btn bg-[#15803D] text-white mt-auto rounded-3xl w-full">
+                Add to Cart
+            </a>
+
+        </div>
+
+    </div>
+    `;
+
+    plantContainer.appendChild(div);
   });
+
+  // hide spinner after loading
+  spinner.classList.add('hidden');
+  spinner.classList.remove('flex');
 };
 loadAllPlants();
 //load all categories
@@ -104,13 +128,13 @@ const displayCategory = (plants) => {
 
     plantContainer.appendChild(div);
     //modal functionality
-const modalName = div.querySelector('.plant-name');
-modalName.addEventListener('click', () => {
-  displayDetails(plant);
-});
+    const modalName = div.querySelector('.plant-name');
+    modalName.addEventListener('click', () => {
+      displayDetails(plant);
+    });
   });
 
-  displayAddCart(plants);     
+  displayAddCart(plants);
 };
 
 //Add cart functionality
@@ -173,10 +197,10 @@ const displayAddCart = (plants) => {
 
 //modal funtionality
 const displayDetails = (plant) => {
-  const detailContainer=document.getElementById('details-container');
-  detailContainer.innerHTML="";
-  const div=document.createElement('div');
-  div.innerHTML=`
+  const detailContainer = document.getElementById('details-container');
+  detailContainer.innerHTML = "";
+  const div = document.createElement('div');
+  div.innerHTML = `
    <div class="text-xl p-2 h-[450px] flex flex-col gap-y-2">
      <h1 class="text-2xl font-bold">${plant.name}</h1>
      <img src="${plant.image}" alt="" class="h-[50%] w-full object-cover rounded-md">
