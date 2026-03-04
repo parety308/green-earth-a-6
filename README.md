@@ -8,12 +8,12 @@ Users can explore different types of trees, view their details, and add trees to
 ---
 
 ## 🚀 Live Demo
-Live Link: YOUR_DEPLOYED_URL_HERE  
+Live Link: [YOUR_DEPLOYED_URL_HERE](https://green-earth-parvez.netlify.app/)  
 
 ---
 
 ## 📂 GitHub Repository
-Repository Link: YOUR_REPO_URL_HERE  
+Repository Link: [YOUR_REPO_URL_HERE](https://github.com/parety308/green-earth-a-6)  
 
 ---
 
